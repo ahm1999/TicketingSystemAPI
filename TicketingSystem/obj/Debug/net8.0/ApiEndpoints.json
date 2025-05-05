@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "TicketingSystem.Shared.Common.TicketController",
+    "Method": "GetAllTickets",
+    "RelativePath": "api/Ticket",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TicketingSystem.Shared.Common.TicketController",
+    "Method": "AddTicket",
+    "RelativePath": "api/Ticket",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ticket",
+        "Type": "TicketingSystem.Features.Ticket.Ticket",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
