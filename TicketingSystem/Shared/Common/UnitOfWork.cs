@@ -1,4 +1,4 @@
-﻿using TicketingSystem.Features.Ticket;
+﻿using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Shared.Data;
 using TicketingSystem.Shared.Interfaces;
 

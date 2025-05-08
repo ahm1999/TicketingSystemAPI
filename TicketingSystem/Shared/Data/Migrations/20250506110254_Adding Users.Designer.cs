@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketingSystem.Shared.Data;
 
@@ -10,9 +11,11 @@ using TicketingSystem.Shared.Data;
 namespace TicketingSystem.Shared.Data.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250506110254_Adding Users")]
+    partial class AddingUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,26 +23,6 @@ namespace TicketingSystem.Shared.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("TicketingSystem.Features.AuthUserEntity.AuthUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AuthUsers");
-                });
 
             modelBuilder.Entity("TicketingSystem.Features.TicketEntity.Ticket", b =>
                 {
@@ -76,8 +59,9 @@ namespace TicketingSystem.Shared.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -85,37 +69,16 @@ namespace TicketingSystem.Shared.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthUserId")
-                        .IsUnique();
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TicketingSystem.Features.TicketEntity.Ticket", b =>
                 {
-                    b.HasOne("TicketingSystem.Features.UserEntity.User", "User")
+                    b.HasOne("TicketingSystem.Features.UserEntity.User", null)
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TicketingSystem.Features.UserEntity.User", b =>
-                {
-                    b.HasOne("TicketingSystem.Features.AuthUserEntity.AuthUser", "AuthUser")
-                        .WithOne("User")
-                        .HasForeignKey("TicketingSystem.Features.UserEntity.User", "AuthUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuthUser");
-                });
-
-            modelBuilder.Entity("TicketingSystem.Features.AuthUserEntity.AuthUser", b =>
-                {
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketingSystem.Features.UserEntity.User", b =>
