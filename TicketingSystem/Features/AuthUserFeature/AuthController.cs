@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketingSystem.Features.AuthUserFeature.DTOs;
+using TicketingSystem.Features.AuthUserFeature.interfaces;
 
 namespace TicketingSystem.Features.AuthUserFeature
 {
@@ -7,6 +8,11 @@ namespace TicketingSystem.Features.AuthUserFeature
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] LogInDTO Dto) {
 
@@ -16,8 +22,9 @@ namespace TicketingSystem.Features.AuthUserFeature
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpDTO Dto)
         {
+            var response = await _authService.SignUpAsync(Dto);
 
-            return  Ok();
+            return  Ok(response);
         }
 
     }

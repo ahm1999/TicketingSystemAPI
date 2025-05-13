@@ -16,6 +16,7 @@ namespace TicketingSystem
             builder.Services.AddSwaggerGen();
 
             builder.Services.PersistanceDependancies(builder.Configuration);
+            builder.Services.Services();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

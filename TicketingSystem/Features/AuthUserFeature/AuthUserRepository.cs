@@ -1,33 +1,15 @@
 ﻿using TicketingSystem.Shared.Common;
 using TicketingSystem.Features.AuthUserFeature;
+using TicketingSystem.Shared.Data;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketingSystem.Features.AuthUserRepository
 {
-    public class AuthUserRepository : GenericRepository<AuthUser>
+    public class AuthUserRepository : AbsGenericRepository<AuthUser>,IGenericRepository<AuthUser>
     {
-        public Task<AuthUser> Create(AuthUser entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteById(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<AuthUser>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<AuthUser> GetById(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<AuthUser> Update(AuthUser entity)
-        {
-            throw new NotImplementedException();
+        public AuthUserRepository(ApplicationDBContext context):base(context)
+        {   
         }
     }
 }

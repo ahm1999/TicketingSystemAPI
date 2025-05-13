@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TicketingSystem.Shared.Interfaces;
+using static TicketingSystem.Features.TicketFeature.TicketSpecification;
 
 namespace TicketingSystem.Features.TicketFeature
 {
@@ -16,8 +17,20 @@ namespace TicketingSystem.Features.TicketFeature
         [HttpGet]
         public async Task<IActionResult> GetAllTickets()
         {
+            var GetAllTickets = new GetAllTicketSpec();
+            var tickets = await _unitOfWork.TicketRepository.ListAsync(GetAllTickets);
+            return Ok(tickets);
+        }
 
-            return Ok(await _unitOfWork.TicketRepository.GetAll());
+        [HttpGet("{userId:int}")]
+
+        public async Task<IActionResult> GetTicketsUserId([FromRoute] int userId) {
+            var ticketSpec = new GetAllTicketsByUserId(userId);
+
+            var tickets = await _unitOfWork.TicketRepository.ListAsync(ticketSpec);
+
+            return Ok(tickets); 
+        
         }
 
         [HttpPost]
