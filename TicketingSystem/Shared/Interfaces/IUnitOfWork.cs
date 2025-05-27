@@ -1,5 +1,6 @@
 ﻿using TicketingSystem.Features.AuthUserFeature;
 using TicketingSystem.Features.TicketFeature;
+using TicketingSystem.Features.UserFeature;
 using TicketingSystem.Shared.Common;
 
 namespace TicketingSystem.Shared.Interfaces
@@ -8,6 +9,7 @@ namespace TicketingSystem.Shared.Interfaces
     {
         IGenericRepository<Ticket> TicketRepository { get; }
         IGenericRepository<AuthUser> AuthUserRepository { get; }
+        IGenericRepository<User> UserRepository { get; }
         Task SaveChangesAsync();
     }
 }
