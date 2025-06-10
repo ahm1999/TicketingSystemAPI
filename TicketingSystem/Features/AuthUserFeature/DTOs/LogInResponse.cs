@@ -2,5 +2,11 @@
 {
     public class LogInResponse
     {
+        public string? Token;
+
+        public LogInResponse(string token)
+        {
+            this.Token = token;
+        }
     }
 }

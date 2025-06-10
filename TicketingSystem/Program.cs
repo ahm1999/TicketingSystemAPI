@@ -1,5 +1,9 @@
 using TicketingSystem.Shared.Common;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 namespace TicketingSystem
 {
     public class Program
@@ -17,6 +21,22 @@ namespace TicketingSystem
 
             builder.Services.PersistanceDependancies(builder.Configuration);
             builder.Services.Services();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                        .AddJwtBearer(options =>
+                        {
+
+
+                            options.TokenValidationParameters = new TokenValidationParameters()
+                            {
+                                ValidateIssuerSigningKey = true,
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtSecret") ?? " ")),
+                                ValidateIssuer = false,
+                                ValidateAudience = false
+                            };
+                        });
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -21,10 +21,33 @@ namespace TicketingSystem.Features.AuthUserFeature
 
         }
 
-        public Task<ServiceResponse<LogInResponse>> LogInAsync(LogInDTO dto)
+        public async Task<ServiceResponse<LogInResponse>> LogInAsync(LogInDTO dto)
         {
-            //_unitOfWork.AuthUserRepository.GetSingleEntity();throw new NotImplementedException();
-            throw new NotImplementedException();
+            var emailspec = new FindByEmailSpecification(dto.Email!);
+
+            List<AuthUser> users = await _unitOfWork.AuthUserRepository.ListAsync(emailspec);
+
+            if (users.Count == 0)
+            {
+
+                return new ServiceResponse<LogInResponse>(false, "A user with that email doesn't exist");
+
+            }
+
+            var authuser = users[0];
+
+            //matching the password with the hash 
+            
+            //wrong password rout
+            if (!_passwordHashing.ValidatePassword(authuser.PasswordHash!, dto.Password))
+            {
+                return new ServiceResponse<LogInResponse>(false, "wrong Password");
+            }
+
+            //right password route
+
+                        
+            return new ServiceResponse<LogInResponse>(true, new LogInResponse("token") ,"Log In succesful");
 
         }
 

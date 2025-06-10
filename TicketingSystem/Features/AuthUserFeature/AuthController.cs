@@ -16,7 +16,9 @@ namespace TicketingSystem.Features.AuthUserFeature
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] LogInDTO Dto) {
 
-            return Ok();
+            var response = await _authService.LogInAsync(Dto);
+
+            return Ok(response);
         }
 
         [HttpPost("SignUp")]
