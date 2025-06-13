@@ -5,6 +5,7 @@ using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Shared.Data;
 using TicketingSystem.Shared.Interfaces;
 using TicketingSystem.Shared.Utils;
+using TicketingSystem.Shared.Utils.TokenServices;
 
 namespace TicketingSystem.Shared.Common
 {
@@ -19,8 +20,10 @@ namespace TicketingSystem.Shared.Common
         }
 
         public static void Services(this IServiceCollection services) {
+            services.AddHttpContextAccessor();
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<IPasswordHashing, PasswordHashing>();
+            services.AddTransient<ITokenService, TokenService>();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Linq;
 using System.Linq.Expressions;
 using TicketingSystem.Shared.Common;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace TicketingSystem.Shared.Data
@@ -41,18 +42,38 @@ namespace TicketingSystem.Shared.Data
 
             }
 
+            if (spec.Includes is not null) {
+
+                foreach (var item in spec.Includes)
+                {
+                   query = query.Include(item);
+                }
+
+            }
+
             return await query.ToListAsync();
             
         }
 
         public async Task<T> GetSingleEntity(ISpecification<T> spec) {
 
-        if (spec.Criteria is null) return BaseEntity.Empty<T>();
-        T? response = await entities.FirstOrDefaultAsync(spec.Criteria);
-        if (response is null) return BaseEntity.Empty<T>();
-          
-        return response;
+            IQueryable <T> query = entities;
 
+            if (spec.Criteria is null) return BaseEntity.Empty<T>();
+
+            if (spec.Includes is not null)
+            {
+                foreach (var item in spec.Includes)
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            T? response = await query.FirstOrDefaultAsync(spec.Criteria);
+
+            if (response is null) return BaseEntity.Empty<T>();
+          
+            return response;
         }
 
         public Task<T> Update(T entity)

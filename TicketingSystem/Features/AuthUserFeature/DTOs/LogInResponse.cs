@@ -2,7 +2,7 @@
 {
     public class LogInResponse
     {
-        public string? Token;
+        public string? Token { get; set; }
 
         public LogInResponse(string token)
         {
