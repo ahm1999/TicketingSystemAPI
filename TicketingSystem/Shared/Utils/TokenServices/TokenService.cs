@@ -25,6 +25,7 @@ namespace TicketingSystem.Shared.Utils.TokenServices
 
                 new Claim(ClaimTypes.Sid,user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email??""),
+                new Claim(ClaimTypes.Role,user.User!.role!)
 
             };
 

@@ -1,8 +1,7 @@
 ﻿using TicketingSystem.Shared.Common;
 using TicketingSystem.Features.AuthUserFeature;
 using TicketingSystem.Shared.Data;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace TicketingSystem.Features.AuthUserRepository
 {
