@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using TicketingSystem.Features.AuthUserFeature;
+using TicketingSystem.Features.TicketFeature.DTOs;
+using TicketingSystem.Features.TicketFeature.Interfaces;
 using TicketingSystem.Shared.Interfaces;
 using static TicketingSystem.Features.TicketFeature.TicketSpecification;
 
@@ -12,40 +14,35 @@ namespace TicketingSystem.Features.TicketFeature
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public TicketController(IUnitOfWork unitOfWork)
+        private readonly ITicketService _ticketService;
+        public TicketController(IUnitOfWork unitOfWork,ITicketService ticketService)
         {
-            _unitOfWork = unitOfWork;
+            _ticketService = ticketService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllTickets()
         {
-            var GetAllTickets = new GetAllTicketSpec(null);
-            var tickets = await _unitOfWork.TicketRepository.ListAsync(GetAllTickets);
-            return Ok(tickets);
+            return Ok();
         }
 
         [HttpGet("{userId:int}")]
 
         public async Task<IActionResult> GetTicketsUserId([FromRoute] int userId) {
 
-            var ticketSpec = new GetAllTicketsByUserId(userId,null);
 
-            var tickets = await _unitOfWork.TicketRepository.ListAsync(ticketSpec);
 
-            return Ok(tickets); 
+            return Ok(); 
         
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddTicket(Ticket ticket)
+        public async Task<IActionResult> AddTicket(AddTicketDTO dto)
         {
+            var ticketResponse = await _ticketService.AddTicketAsync(dto);
 
-            Ticket ticket1 = await _unitOfWork.TicketRepository.Create(ticket);
-            await _unitOfWork.SaveChangesAsync();
+            return Ok(ticketResponse);
 
-            return Ok(ticket1);
         }
     }
 }

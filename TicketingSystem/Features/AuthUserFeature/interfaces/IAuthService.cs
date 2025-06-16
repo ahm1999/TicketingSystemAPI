@@ -7,7 +7,7 @@ namespace TicketingSystem.Features.AuthUserFeature.interfaces
     {
         public Task<ServiceResponse<LogInResponse>> LogInAsync(LogInDTO dto);
         public Task<ServiceResponse<SignUpResponse>> SignUpAsync(SignUpDTO dto);
-        public string GetCurrentUserId();
+        public int GetCurrentUserId();
 
     }
 }

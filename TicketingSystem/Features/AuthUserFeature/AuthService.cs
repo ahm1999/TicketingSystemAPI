@@ -32,14 +32,15 @@ namespace TicketingSystem.Features.AuthUserFeature
 
         }
 
-        public string GetCurrentUserId()
+        public int GetCurrentUserId()
         {
             if (context is not null)
             {
                 string id = context.User.FindFirst(ClaimTypes.Sid)!.Value;
-                return id;
+
+                return int.Parse(id);
             }
-            else return String.Empty;
+            else return 0;
         }
 
         public async Task<ServiceResponse<LogInResponse>> LogInAsync(LogInDTO dto)
