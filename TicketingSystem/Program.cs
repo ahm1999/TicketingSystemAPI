@@ -48,6 +48,8 @@ namespace TicketingSystem
                         });
             });
 
+            builder.Services.AddAuthorization();
+
             builder.Services.PersistanceDependancies(builder.Configuration);
             builder.Services.Services();
 

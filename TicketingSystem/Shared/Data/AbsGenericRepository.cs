@@ -32,9 +32,15 @@ namespace TicketingSystem.Shared.Data
             throw new NotImplementedException();
         }
 
-        public async Task<List<T>> ListAsync(ISpecification<T> spec)
+        public async Task<List<T>> ListAsync(ISpecification<T>? spec)
         {
             IQueryable<T> query = entities;
+
+            if (spec is null) { 
+                return await query.ToListAsync();
+            }
+
+           
 
             if (spec.Criteria is not null)
             {
@@ -55,9 +61,15 @@ namespace TicketingSystem.Shared.Data
             
         }
 
-        public async Task<T> GetSingleEntity(ISpecification<T> spec) {
+        public async Task<T> GetSingleEntity(ISpecification<T>? spec) {
 
             IQueryable <T> query = entities;
+
+            if (spec is null)
+            {
+                return BaseEntity.Empty<T>();
+            }
+
 
             if (spec.Criteria is null) return BaseEntity.Empty<T>();
 
@@ -76,9 +88,27 @@ namespace TicketingSystem.Shared.Data
             return response;
         }
 
-        public Task<T> Update(T entity)
+        public async Task<T> GetEntityById(int Id) {
+
+            IQueryable<T> query = entities;
+
+            var entity = await query.FirstOrDefaultAsync(e => e.Id == Id);
+
+            if (entity is null) {
+                return BaseEntity.Empty<T>();
+
+            }
+
+            return entity;
+        }
+
+
+        public T Update(T entity)
         {
-            throw new NotImplementedException();
+            entities.Update(entity);
+
+
+            return entity;
         }
 
         

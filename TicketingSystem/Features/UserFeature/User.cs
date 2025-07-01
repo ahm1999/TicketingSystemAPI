@@ -13,7 +13,7 @@ namespace TicketingSystem.Features.UserFeature
         public string? UserName  { get; set; }
 
         public ICollection<Ticket>? Tickets { get; set; }
-        public ICollection<Department>? Departments { get; set; }
+        public ICollection<Department>? Departments { get; set; } 
 
         [ForeignKey(nameof(AuthUser))]
         public int AuthUserId { get; set; }

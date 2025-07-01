@@ -3,6 +3,8 @@ using TicketingSystem.Features.AuthUserFeature;
 using TicketingSystem.Features.AuthUserFeature.interfaces;
 using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Features.TicketFeature.Interfaces;
+using TicketingSystem.Features.UserFeature;
+using TicketingSystem.Features.UserFeature.Interfaces;
 using TicketingSystem.Shared.Data;
 using TicketingSystem.Shared.Interfaces;
 using TicketingSystem.Shared.Utils;
@@ -25,6 +27,7 @@ namespace TicketingSystem.Shared.Common
             services.AddAutoMapper(typeof(Program));
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddTransient<IPasswordHashing, PasswordHashing>();
             services.AddTransient<ITokenService, TokenService>();
         }

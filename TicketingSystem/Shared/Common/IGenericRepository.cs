@@ -6,9 +6,10 @@ namespace TicketingSystem.Shared.Common
     {
 
         Task<T> Create(T entity);
-        Task<List<T>> ListAsync(ISpecification<T> specification);
-        Task<T> GetSingleEntity(ISpecification<T> specification);
-        Task<T> Update(T entity);
+        Task<List<T>> ListAsync(ISpecification<T>? specification);
+        Task<T> GetSingleEntity(ISpecification<T>? specification);
+        Task<T> GetEntityById(int Id);
+        T Update(T entity);
         Task DeleteById(int Id);
 
     }
