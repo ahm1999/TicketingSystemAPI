@@ -20,5 +20,8 @@ namespace TicketingSystem.Features.UserFeature
         public AuthUser? AuthUser { get; set; }
 
         public string? role { get; set; } = RolesConsts.user;
+
+
+        public ICollection<Ticket>? AssignedTickets { get; set; }
     }
 }

@@ -9,5 +9,10 @@ namespace TicketingSystem.Features.TicketFeature.DTOs
 
         [Required]
         public string? Description { get; set; }
+
+        [Required]
+        public int DepartmentId { get; set; }
+
+
     }
 }

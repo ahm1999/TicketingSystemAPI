@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
-using TicketingSystem.Features.AuthUserFeature;
+using TicketingSystem.Features.AuthUserFeature.interfaces;
 using TicketingSystem.Features.TicketFeature.DTOs;
 using TicketingSystem.Features.TicketFeature.Interfaces;
-using TicketingSystem.Shared.Interfaces;
-using static TicketingSystem.Features.TicketFeature.TicketSpecification;
+using TicketingSystem.Features.UserFeature;
+
 
 namespace TicketingSystem.Features.TicketFeature
 {
@@ -15,14 +13,22 @@ namespace TicketingSystem.Features.TicketFeature
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
-        public TicketController(IUnitOfWork unitOfWork,ITicketService ticketService)
+        private readonly IAuthService _authService;
+        public TicketController(ITicketService ticketService,IAuthService authService)
         {
             _ticketService = ticketService;
+            _authService = authService;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAllTickets()
+
+        [HttpGet("AssignedTickets")]
+        [Authorize(Roles = RolesConsts.Agent)]
+        public async Task<IActionResult> GetAllAssignedTickets()
         {
-            return Ok();
+            int UserId = _authService.GetCurrentUserId();
+
+            var ServiceResponse = await _ticketService.GetAssignedTicketsForUser(UserId);
+
+            return Ok(ServiceResponse);
         }
 
         [HttpGet("{userId:int}")]
@@ -44,5 +50,20 @@ namespace TicketingSystem.Features.TicketFeature
             return Ok(ticketResponse);
 
         }
+
+
+        [HttpPost("AssignTicket/{TicketId:int}/{UserId}")]
+        [Authorize(Roles = RolesConsts.Admin)]
+
+        public async Task<IActionResult> AssingTicketToAgent(int TicketId,int UserId) {
+
+            var ticketResponse = await _ticketService.AssignTicketToUser(UserId, TicketId);
+            if (!ticketResponse.Success) {
+
+                return BadRequest(ticketResponse);
+            }
+            return Ok(ticketResponse);
+        }
+
     }
 }

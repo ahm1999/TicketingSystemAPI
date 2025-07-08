@@ -24,6 +24,10 @@ namespace TicketingSystem.Shared.Data
             modelBuilder.Entity<User>()
                 .HasMany<Department>(u => u.Departments)
                 .WithMany(d => d.Users);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne<User>(u => u.AssignedTo)
+                .WithMany(u => u.AssignedTickets);
         }
 
         public DbSet<Ticket> Tickets { get; set; } 
