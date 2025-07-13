@@ -81,7 +81,7 @@ namespace TicketingSystem
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

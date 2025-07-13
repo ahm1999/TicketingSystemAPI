@@ -20,6 +20,8 @@ namespace TicketingSystem.Features.TicketFeature
 
         public Department? department { get; set; }
 
+        public DateTime? CreatedOn { get; set; }
+
         public int? AssignedToId { get; set; }
         public User? AssignedTo { get; set; }
     }

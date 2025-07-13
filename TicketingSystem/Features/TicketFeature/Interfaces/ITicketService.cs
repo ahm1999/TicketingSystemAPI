@@ -10,10 +10,9 @@ namespace TicketingSystem.Features.TicketFeature.Interfaces
         Task<ServiceResponse<List<ResponseTicketDTO>>> GetTicketsByUser (int userId);
 
         Task<ServiceResponse<ResponseTicketDTO>> AssignTicketToUser(int userId, int TicketId);
+        Task<ServiceResponse<ResponseTicketDTO>> ChangeTicketStatus(int TicketId,int UserId,TicketStatus ticketStatus);
         Task<ServiceResponse<List<ResponseTicketDTO>>> GetAssignedTicketsForUser (int userId);
-
-        
-
+        Task<ServiceResponse<List<ResponseTicketDTO>>> GetAllUnAssignedTickets ();
 
     }
 }

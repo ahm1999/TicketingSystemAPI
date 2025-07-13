@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Sockets;
 using TicketingSystem.Features.AuthUserFeature.interfaces;
 using TicketingSystem.Features.TicketFeature.DTOs;
 using TicketingSystem.Features.TicketFeature.Interfaces;
@@ -30,11 +32,21 @@ namespace TicketingSystem.Features.TicketFeature
         {
             Ticket ticket =  _mapper.Map<Ticket>(dto);
 
+            ticket.CreatedOn = DateTime.Now;
+
             ticket.UserId = _authService.GetCurrentUserId();
 
             await _context.Tickets.AddAsync(ticket);
 
             await _context.SaveChangesAsync();
+
+            //var ret_Ticket = _context.Tickets
+            //                         .Include(t => t.User )
+            //                         .Include(t => t.department )
+            //                         .FirstOrDefaultAsync(t => t.Id == ticket.Id);
+
+            
+
 
             ResponseTicketDTO response = _mapper.Map<ResponseTicketDTO>(ticket);
 
@@ -110,16 +122,66 @@ namespace TicketingSystem.Features.TicketFeature
                     Id = t.Id,
                     Title = t.Title,
                     Description = t.Description,
-                    DepartmentId = t.DepartmentId,
+                    Department = t.department!.Name,
                     UserId = t.UserId,
+                    AssignedTo = t.AssignedTo!.UserName,
                     AssignedToId = t.AssignedToId,
-                    TicketStatus = t.TicketStatus
+                    TicketStatus = t.TicketStatus.ToString(),
+                    CreatedBy = t.User!.UserName
+                    
                 }
             ).Where(t => t.AssignedToId == userId)
              .ToListAsync();
 
             return new ServiceResponse<List<ResponseTicketDTO>>(true, tickets, "Tickets Retrieved Succesfully");
              
+        }
+
+        public async Task<ServiceResponse<ResponseTicketDTO>> ChangeTicketStatus(int TicketId,int UserId ,TicketStatus ticketStatus)
+        {
+            User? user = await _context.Users
+                               .Include(u => u.Departments)
+                               .FirstOrDefaultAsync(u => u.Id == UserId);
+
+            Ticket? ticket = await _context.Tickets
+                                   .FirstOrDefaultAsync(t => t.Id == TicketId);
+
+            if (user is null || ticket is null)
+            {
+                return new ServiceResponse<ResponseTicketDTO>(false, "Ticket or user doesn't exist ");
+
+            }
+
+
+            if (ticket.AssignedToId != UserId)
+            {
+
+                return new ServiceResponse<ResponseTicketDTO>(false, "Ticket not assigned to user");
+
+            }
+
+            ticket.TicketStatus = ticketStatus;
+
+            await _context.SaveChangesAsync();
+
+            ResponseTicketDTO response = _mapper.Map<ResponseTicketDTO>(ticket);
+            return new ServiceResponse<ResponseTicketDTO>(true, response, $"ticket changed status {ticketStatus.ToString()}");
+
+
+        }
+
+        public async Task<ServiceResponse<List<ResponseTicketDTO>>> GetAllUnAssignedTickets()
+        {
+            List<Ticket> tickets = await _context.Tickets
+                                   .Include(t => t.department)
+                                   .Include(t => t.User)
+                                   .Include(t => t.AssignedTo)
+                                   .Where(t => t.AssignedToId == null)
+                                   .ToListAsync();
+
+            List<ResponseTicketDTO> responseTicketDTOs = _mapper.Map<List<ResponseTicketDTO>>(tickets);
+
+            return new ServiceResponse<List<ResponseTicketDTO>>(true, responseTicketDTOs, "tickets retrieved");
         }
     }
 }
