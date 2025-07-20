@@ -153,12 +153,33 @@ namespace TicketingSystem.Features.TicketFeature
             }
 
 
-            if (ticket.AssignedToId != UserId)
+            bool IsAdmin = user.role == RolesConsts.Admin;
+            bool IsAgent = user.role == RolesConsts.Agent;
+
+
+            if (ticket.AssignedToId != UserId && !IsAdmin)
             {
 
                 return new ServiceResponse<ResponseTicketDTO>(false, "Ticket not assigned to user");
 
             }
+
+            if (ticket.TicketStatus == TicketStatus.Closed)
+            {
+                return new ServiceResponse<ResponseTicketDTO>(false, "Ticket is closed by Admin");
+            }
+
+
+            if (ticketStatus == TicketStatus.Closed && IsAgent )
+            {
+                return new ServiceResponse<ResponseTicketDTO>(false, "An Agent Can't close a ticket");
+            }
+
+            if (ticketStatus != TicketStatus.Closed && IsAdmin)
+            {
+                return new ServiceResponse<ResponseTicketDTO>(false, "An Admin Can only close a ticket");
+            }
+
 
             ticket.TicketStatus = ticketStatus;
 
@@ -182,6 +203,50 @@ namespace TicketingSystem.Features.TicketFeature
             List<ResponseTicketDTO> responseTicketDTOs = _mapper.Map<List<ResponseTicketDTO>>(tickets);
 
             return new ServiceResponse<List<ResponseTicketDTO>>(true, responseTicketDTOs, "tickets retrieved");
+        }
+
+        public async Task<ServiceResponse<List<ResponseTicketDTO>>> GetTickets(TicketRequestQuery query)
+        {
+            IQueryable<Ticket> tickets = _context.Tickets
+                                                 .Include(t => t.department)
+                                                 .Include(t => t.User)
+                                                 .Include(t => t.AssignedTo);
+
+
+
+
+
+
+            if (query.TicketStatus is not null)
+            {
+                tickets = tickets.Where(t => t.TicketStatus == query.TicketStatus);
+            }
+
+            if (query.IsAssigned is not null) {
+
+                tickets = tickets.Where(t => t.AssignedToId != null);
+            
+            }
+
+            if (query.From is not null && query.Untill is not null) {
+
+                tickets = tickets.Where(t => t.CreatedOn >=query.From || t.CreatedOn <= query.Untill );
+            }
+
+            tickets = tickets.OrderByDescending(t => t.Id);
+
+            tickets = tickets.Skip((query.Page - 1) * query.NumberOfTickets)
+                             .Take(query.NumberOfTickets);
+
+
+            var ticketsList = await tickets
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            List<ResponseTicketDTO> responseTicketDTOs = _mapper.Map<List<ResponseTicketDTO>>(ticketsList);
+
+            return new ServiceResponse<List<ResponseTicketDTO>>(true, responseTicketDTOs, "tickets retrieved");
+
         }
     }
 }

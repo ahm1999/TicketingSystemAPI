@@ -3,8 +3,8 @@
     public class TicketRequestQuery
     {
 
-        
-        
+
+
         //public DateTime? From { get;
         //    set {
         //        if (value is null) {
@@ -13,7 +13,16 @@
         //    } }
         //public DateTime Until { get; set; }
 
-        public TicketStatus TicketStatus { get; set; }
+        public int Page { get; set; } = 1;
+        public int NumberOfTickets { get; set; } = 10;
+
+        public TicketStatus? TicketStatus { get; set; }
+
+        public bool? IsAssigned { get; set; }
+
+        public DateTime? From { get; set; }
+        public DateTime? Untill { get; set; }
+
 
 
     }

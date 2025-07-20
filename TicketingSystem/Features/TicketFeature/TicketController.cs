@@ -35,9 +35,15 @@ namespace TicketingSystem.Features.TicketFeature
 
         public async Task<IActionResult> GetTickets([FromQuery]TicketRequestQuery query) {
 
+            var ticketResponse = await _ticketService.GetTickets(query);
+            if (!ticketResponse.Success)
+            {
+
+                return BadRequest(ticketResponse);
+            }
+            return Ok(ticketResponse);
 
 
-            return Ok();
 
         }
 
@@ -67,7 +73,7 @@ namespace TicketingSystem.Features.TicketFeature
 
 
         [HttpPost("{TicketId:int}/status/{ticketStatus}")]
-        [Authorize(Roles =RolesConsts.Agent)]
+        [Authorize(Roles =$"{RolesConsts.Agent},{RolesConsts.Admin}")]
         public async Task<IActionResult> ChangeTicketStatus(int TicketId,TicketStatus ticketStatus)
         {
             int UserId = _authService.GetCurrentUserId();

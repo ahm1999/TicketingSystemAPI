@@ -9,7 +9,7 @@ namespace TicketingSystem.Features.TicketFeature.Mappings
         {
             CreateMap<AddTicketDTO, Ticket>();
             CreateMap<Ticket, ResponseTicketDTO>()
-                .ForMember(dto => dto.Department, opt => opt.MapFrom(src => src.department ))
+                .ForMember(dto => dto.Department, opt => opt.MapFrom(src => src.department!.Name ))
                 .ForMember(dto => dto.CreatedBy, opt => opt.MapFrom(src => src.User!.UserName ))
                 .ForMember(dto => dto.AssignedTo, opt => opt.MapFrom(src => src.AssignedTo!.UserName))
                 .ForMember(dto => dto.TicketStatus, opt => opt.MapFrom(src => src.TicketStatus.ToString()));

@@ -8,6 +8,9 @@ namespace TicketingSystem.Features.TicketFeature.Interfaces
         Task<ServiceResponse<ResponseTicketDTO>> AddTicketAsync(AddTicketDTO dto);
         Task<ServiceResponse<ResponseTicketDTO>> GetSingleTicketById();
         Task<ServiceResponse<List<ResponseTicketDTO>>> GetTicketsByUser (int userId);
+        Task<ServiceResponse<List<ResponseTicketDTO>>> GetTickets (TicketRequestQuery query);
+
+        
 
         Task<ServiceResponse<ResponseTicketDTO>> AssignTicketToUser(int userId, int TicketId);
         Task<ServiceResponse<ResponseTicketDTO>> ChangeTicketStatus(int TicketId,int UserId,TicketStatus ticketStatus);
