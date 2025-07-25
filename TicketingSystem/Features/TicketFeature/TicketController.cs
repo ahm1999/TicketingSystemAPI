@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TicketingSystem.Features.AuthUserFeature.interfaces;
 using TicketingSystem.Features.TicketFeature.DTOs;
 using TicketingSystem.Features.TicketFeature.Interfaces;
+using TicketingSystem.Features.TicketFeature.RequestQueries;
 using TicketingSystem.Features.UserFeature;
 
 
@@ -20,22 +21,25 @@ namespace TicketingSystem.Features.TicketFeature
             _authService = authService;
         }
 
-        [HttpGet("AssignedTickets")]
+        [HttpGet("Agent/AssignedTickets")]
         [Authorize(Roles = RolesConsts.Agent)]
-        public async Task<IActionResult> GetAllAssignedTickets()
+        public async Task<IActionResult> GetAllAssignedTickets([FromQuery] TicketRequestQuery query)
         {
             int UserId = _authService.GetCurrentUserId();
 
-            var ServiceResponse = await _ticketService.GetAssignedTicketsForUser(UserId);
+            var ServiceResponse = await _ticketService.GetTickets(query,null,UserId);
 
             return Ok(ServiceResponse);
         }
 
-        [HttpGet]
+        [HttpGet("User")]
+        [Authorize]
 
-        public async Task<IActionResult> GetTickets([FromQuery]TicketRequestQuery query) {
+        public async Task<IActionResult> GetTicketsByUser([FromQuery]TicketRequestQuery query) {
 
-            var ticketResponse = await _ticketService.GetTickets(query);
+            int UserId = _authService.GetCurrentUserId();
+
+            var ticketResponse = await _ticketService.GetTickets(query,UserId,null);
             if (!ticketResponse.Success)
             {
 
@@ -53,6 +57,11 @@ namespace TicketingSystem.Features.TicketFeature
         {
             var ticketResponse = await _ticketService.AddTicketAsync(dto);
 
+            if (!ticketResponse.Success)
+            {
+
+                return BadRequest(ticketResponse);
+            }
             return Ok(ticketResponse);
 
         }
@@ -90,12 +99,12 @@ namespace TicketingSystem.Features.TicketFeature
         }
 
 
-        [HttpGet("UnassignedTickets")]
+        [HttpGet("Admin/")]
         [Authorize(Roles = RolesConsts.Admin)]
 
-        public async Task<IActionResult> GetAllUnAssignedTickets() {
+        public async Task<IActionResult> GetAllUnAssignedTickets([FromQuery]AdminTicketRequestQuery query) {
 
-            var ticketResponse = await _ticketService.GetAllUnAssignedTickets();
+            var ticketResponse = await _ticketService.GetTickets(query,query.UserId,query.AssignedToId);
             if (!ticketResponse.Success)
             {
 

@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketingSystem.Features.AuthUserFeature;
 using TicketingSystem.Features.AuthUserFeature.interfaces;
+using TicketingSystem.Features.CommentFeature;
+using TicketingSystem.Features.CommentFeature.Interfaces;
+using TicketingSystem.Features.DepartmentFeature;
+using TicketingSystem.Features.DepartmentFeature.Interfaces;
 using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Features.TicketFeature.Interfaces;
 using TicketingSystem.Features.UserFeature;
@@ -28,6 +32,8 @@ namespace TicketingSystem.Shared.Common
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddTransient<IPasswordHashing, PasswordHashing>();
             services.AddTransient<ITokenService, TokenService>();
         }

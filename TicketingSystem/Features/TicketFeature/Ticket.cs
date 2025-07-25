@@ -1,4 +1,5 @@
-﻿using TicketingSystem.Features.DepartmentFeature;
+﻿using TicketingSystem.Features.CommentFeature;
+using TicketingSystem.Features.DepartmentFeature;
 using TicketingSystem.Features.UserFeature;
 using TicketingSystem.Shared.Common;
 
@@ -24,5 +25,7 @@ namespace TicketingSystem.Features.TicketFeature
 
         public int? AssignedToId { get; set; }
         public User? AssignedTo { get; set; }
+
+        public ICollection<Comment>? Comments { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Features.AuthUserFeature;
 using System.ComponentModel.DataAnnotations.Schema;
 using TicketingSystem.Features.DepartmentFeature;
+using TicketingSystem.Features.CommentFeature;
 
 namespace TicketingSystem.Features.UserFeature
 {
@@ -21,7 +22,8 @@ namespace TicketingSystem.Features.UserFeature
 
         public string? role { get; set; } = RolesConsts.user;
 
-
         public ICollection<Ticket>? AssignedTickets { get; set; }
+
+        public ICollection<Comment>? Comments { get; set; }
     }
 }

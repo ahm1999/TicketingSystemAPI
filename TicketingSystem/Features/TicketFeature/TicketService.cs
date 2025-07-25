@@ -3,8 +3,10 @@ using Azure;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Sockets;
 using TicketingSystem.Features.AuthUserFeature.interfaces;
+using TicketingSystem.Features.DepartmentFeature;
 using TicketingSystem.Features.TicketFeature.DTOs;
 using TicketingSystem.Features.TicketFeature.Interfaces;
+using TicketingSystem.Features.TicketFeature.RequestQueries;
 using TicketingSystem.Features.UserFeature;
 using TicketingSystem.Shared.Common;
 using TicketingSystem.Shared.Data;
@@ -30,6 +32,19 @@ namespace TicketingSystem.Features.TicketFeature
         }
         public async Task<ServiceResponse<ResponseTicketDTO>> AddTicketAsync(AddTicketDTO dto)
         {
+
+            if (dto.DepartmentId <= 0) {
+
+                return new ServiceResponse<ResponseTicketDTO>(false, "Invalid Department Id");
+            }
+
+            Department? department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == dto.DepartmentId);
+
+            if (department is null)
+            {
+                return new ServiceResponse<ResponseTicketDTO>(false, "Invalid Department Id");
+            }
+
             Ticket ticket =  _mapper.Map<Ticket>(dto);
 
             ticket.CreatedOn = DateTime.Now;
@@ -39,14 +54,6 @@ namespace TicketingSystem.Features.TicketFeature
             await _context.Tickets.AddAsync(ticket);
 
             await _context.SaveChangesAsync();
-
-            //var ret_Ticket = _context.Tickets
-            //                         .Include(t => t.User )
-            //                         .Include(t => t.department )
-            //                         .FirstOrDefaultAsync(t => t.Id == ticket.Id);
-
-            
-
 
             ResponseTicketDTO response = _mapper.Map<ResponseTicketDTO>(ticket);
 
@@ -79,7 +86,7 @@ namespace TicketingSystem.Features.TicketFeature
 
             }
 
-            if (ticket.AssignedToId == userId) {
+            if (ticket.AssignedToId == userId || ticket.AssignedToId is not null) {
 
                 return new ServiceResponse<ResponseTicketDTO>(false, "Ticket already assigned to user");
 
@@ -205,7 +212,7 @@ namespace TicketingSystem.Features.TicketFeature
             return new ServiceResponse<List<ResponseTicketDTO>>(true, responseTicketDTOs, "tickets retrieved");
         }
 
-        public async Task<ServiceResponse<List<ResponseTicketDTO>>> GetTickets(TicketRequestQuery query)
+        public async Task<ServiceResponse<List<ResponseTicketDTO>>> GetTickets(TicketRequestQuery query, int? UserId, int? AssignedToId)
         {
             IQueryable<Ticket> tickets = _context.Tickets
                                                  .Include(t => t.department)
@@ -214,6 +221,12 @@ namespace TicketingSystem.Features.TicketFeature
 
 
 
+            if (query is  AdminTicketRequestQuery adminQuery&& adminQuery.IsAssigned is not null)
+            {
+                tickets = tickets.Where(t => t.AssignedToId != null);
+
+            }
+           
 
 
 
@@ -222,16 +235,27 @@ namespace TicketingSystem.Features.TicketFeature
                 tickets = tickets.Where(t => t.TicketStatus == query.TicketStatus);
             }
 
-            if (query.IsAssigned is not null) {
+           
 
-                tickets = tickets.Where(t => t.AssignedToId != null);
             
-            }
-
             if (query.From is not null && query.Untill is not null) {
 
-                tickets = tickets.Where(t => t.CreatedOn >=query.From || t.CreatedOn <= query.Untill );
+                tickets = tickets.Where(t => t.CreatedOn >=query.From && t.CreatedOn <= query.Untill );
             }
+
+            if (AssignedToId is not null)
+            {
+
+                tickets = tickets.Where(t => t.AssignedToId == AssignedToId);
+            }
+
+
+            if (UserId is not null)
+            {
+
+                tickets = tickets.Where(t => t.UserId == UserId);
+            }
+
 
             tickets = tickets.OrderByDescending(t => t.Id);
 

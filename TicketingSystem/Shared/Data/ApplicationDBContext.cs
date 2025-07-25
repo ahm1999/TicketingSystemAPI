@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketingSystem.Features.AuthUserFeature;
+using TicketingSystem.Features.CommentFeature;
 using TicketingSystem.Features.DepartmentFeature;
 using TicketingSystem.Features.TicketFeature;
 using TicketingSystem.Features.UserFeature;
@@ -28,11 +29,16 @@ namespace TicketingSystem.Shared.Data
             modelBuilder.Entity<Ticket>()
                 .HasOne<User>(u => u.AssignedTo)
                 .WithMany(u => u.AssignedTickets);
+
+            modelBuilder.Entity<Comment>().ToTable("Comment");
         }
 
         public DbSet<Ticket> Tickets { get; set; } 
         public DbSet<User> Users { get; set; } 
         public DbSet<Department> Departments { get; set; }
         public DbSet<AuthUser> AuthUsers { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
+
     }
 }

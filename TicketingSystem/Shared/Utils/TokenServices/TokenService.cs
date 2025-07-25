@@ -23,7 +23,7 @@ namespace TicketingSystem.Shared.Utils.TokenServices
 
             var Claims = new List<Claim>(){
 
-                new Claim(ClaimTypes.Sid,user.Id.ToString()),
+                new Claim(ClaimTypes.Sid,user.User!.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email??""),
                 new Claim(ClaimTypes.Role,user.User!.role!)
 
