@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TicketingSystem.Features.DepartmentFeature;
+using TicketingSystem.Features.UserFeature.Dtos;
 using TicketingSystem.Features.UserFeature.Interfaces;
 using TicketingSystem.Shared.Common;
 using TicketingSystem.Shared.Data;
@@ -52,6 +53,26 @@ namespace TicketingSystem.Features.UserFeature
             await _context.SaveChangesAsync();
 
             return new ServiceResponse<User>(true, user, "Department Added Succesfully");
+        }
+
+        public async Task<ServiceResponse<UserResponseDTO>> GetUserData(int UserId)
+        {
+            UserResponseDTO? user = await _context.Users
+                                                  .Select(d =>
+                                                          new UserResponseDTO()
+                                                          {
+                                                              Id = d.Id,
+                                                              email = d.AuthUser!.Email,
+                                                              role = d.role,
+                                                              UserName = d.UserName
+
+                                                          }
+                                                    ).FirstOrDefaultAsync(d => d.Id == UserId);
+            if (user is null) { 
+                return new ServiceResponse<UserResponseDTO>(false, "User doesn't exist");
+            }
+
+            return new ServiceResponse<UserResponseDTO>(true, user, "User Data");
         }
     }
 }

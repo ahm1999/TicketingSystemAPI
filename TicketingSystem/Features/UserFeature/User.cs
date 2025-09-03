@@ -20,7 +20,7 @@ namespace TicketingSystem.Features.UserFeature
         public int AuthUserId { get; set; }
         public AuthUser? AuthUser { get; set; }
 
-        public string? role { get; set; } = RolesConsts.user;
+        public string? role { get; set; } 
 
         public ICollection<Ticket>? AssignedTickets { get; set; }
 

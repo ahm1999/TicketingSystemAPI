@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TicketingSystem.Features.DepartmentFeature.DTOs;
+using TicketingSystem.Features.DepartmentFeature.Interfaces;
 using TicketingSystem.Features.UserFeature;
 using TicketingSystem.Shared.Common;
 using TicketingSystem.Shared.Interfaces;
@@ -14,10 +15,12 @@ namespace TicketingSystem.Features.DepartmentFeature
     public class DepartmentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentService _departmentService;
 
-        public DepartmentController(IUnitOfWork unitOfWork)
+        public DepartmentController(IUnitOfWork unitOfWork,IDepartmentService departmentService)
         {
             _unitOfWork = unitOfWork;
+            _departmentService = departmentService;
         }
 
         [HttpPost("AddDepartment")]
@@ -41,6 +44,22 @@ namespace TicketingSystem.Features.DepartmentFeature
             var response = new ServiceResponse<DepartmentResponseDTO>(true, respDepartment, "Department Added");
 
             return Ok(response);
+
+        }
+
+
+        [HttpGet]
+        [Authorize]
+
+        public async Task<IActionResult> GetAllDepartments([FromQuery]string? searchQuery) {
+
+            var Response = await _departmentService.GetAllDepartments(searchQuery);
+
+            if (!Response.Success)
+            {
+                return BadRequest(Response);
+            }
+            return Ok(Response);
 
         }
     }

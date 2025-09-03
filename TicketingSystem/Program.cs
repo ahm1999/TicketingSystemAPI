@@ -52,7 +52,17 @@ namespace TicketingSystem
 
             builder.Services.PersistanceDependancies(builder.Configuration);
             builder.Services.Services();
-
+				
+			builder.Services.AddCors(options =>
+						{
+							options.AddPolicy("AllowAngularApp", policy =>
+							{
+								policy.WithOrigins("http://localhost:4200") // Angular app URL
+									  .AllowAnyMethod()
+									  .AllowAnyHeader()
+									  .AllowCredentials(); // Needed if using cookies/auth
+							});
+						});	
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         .AddJwtBearer(options =>
                         {
@@ -84,7 +94,7 @@ namespace TicketingSystem
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+			app.UseCors("AllowAngularApp");
             app.MapControllers();
 
             app.Run();

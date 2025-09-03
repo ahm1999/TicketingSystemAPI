@@ -19,13 +19,23 @@ namespace TicketingSystem.Features.DepartmentFeature
             throw new NotImplementedException();
         }
 
-        public async Task<ServiceResponse<List<DepartmentResponseDTO>>> GetAllDepartments()
+        public async Task<ServiceResponse<List<DepartmentResponseDTO>>> GetAllDepartments(string? searchQuery)
         {
-            var Response = await _context.Departments.Select<Department, DepartmentResponseDTO>(d => 
-                new DepartmentResponseDTO() { 
-                Name = d.Name,
-                Id = d.Id
-            }).ToListAsync();
+            var query = _context.Departments.AsQueryable(); 
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                query = query.Where(d => d.Name!.StartsWith(searchQuery.Trim().ToLower()));
+            }
+
+            var Response = await query.Select<Department, DepartmentResponseDTO>(d =>
+              new DepartmentResponseDTO()
+              {
+                  Name = d.Name,
+                  Id = d.Id
+              }).ToListAsync();
+           
+
+          
 
             return new ServiceResponse<List<DepartmentResponseDTO>>(true, Response, "Departments Retrieved Succsefully");
         }

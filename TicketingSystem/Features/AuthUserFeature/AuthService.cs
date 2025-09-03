@@ -113,7 +113,8 @@ namespace TicketingSystem.Features.AuthUserFeature
             User relatedAppUser = new User()
             {
                 AuthUserId = authUser.Id,
-                UserName = dto.UserName
+                UserName = dto.UserName,
+                role = dto.Role
             };
 
             //register User
